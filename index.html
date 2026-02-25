@@ -5,91 +5,222 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ProVantage Group - Professional Services & AI Solutions</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
   
   <style>
-    html { 
-      scroll-behavior: smooth; 
+    html { scroll-behavior: smooth; }
+    
+    * {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    .text-gradient {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1e40af;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --dark-bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: 2px solid var(--primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-payment {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    .btn-paypal {
+      background-color: #0070ba;
+      color: white;
+    }
+
+    .btn-paypal:hover {
+      background-color: #005a94;
+    }
+
+    .btn-stripe {
+      background-color: #635bff;
+      color: white;
+    }
+
+    .btn-stripe:hover {
+      background-color: #4c51bf;
+    }
+
+    .btn-crypto {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-crypto:hover {
+      background-color: #7c3aed;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+      transform: translateY(-5px);
+    }
+
+    .payment-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .payment-modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      padding: 32px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .payment-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .payment-tab {
+      padding: 12px 16px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .payment-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .payment-content {
+      display: none;
+    }
+
+    .payment-content.show {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 48px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
-    .nav-active {
-      color: #3b82f6;
-      border-bottom: 2px solid #3b82f6;
-    }
-    
-    .service-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .fade-in-up {
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .hover-lift {
-      transition: all 0.3s ease;
-    }
-    
-    .hover-lift:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   </style>
 </head>
 
-<body class="bg-white text-gray-900 font-sans">
+<body>
 
-  <!-- NAVIGATION BAR -->
-  <header class="fixed w-full bg-white/95 backdrop-blur border-b border-gray-200 z-50">
+  <!-- NAVIGATION -->
+  <header class="fixed w-full bg-gray-950/90 backdrop-blur border-b border-gray-800 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <!-- Logo -->
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-bold text-lg">PV</span>
+          <span class="text-white font-bold">PV</span>
         </div>
-        <div>
-          <h1 class="text-lg font-bold text-gray-900">ProVantage</h1>
-          <p class="text-xs text-gray-600">Group</p>
-        </div>
+        <h1 class="text-xl font-bold text-blue-400">ProVantage Group</h1>
       </div>
-
-      <!-- Desktop Navigation -->
+      
       <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-        <a href="#home" class="text-gray-600 hover:text-blue-500 transition-colors">Home</a>
-        <a href="#about" class="text-gray-600 hover:text-blue-500 transition-colors">About</a>
-        <a href="#professional-services" class="text-gray-600 hover:text-blue-500 transition-colors">Professional Services</a>
-        <a href="#real-estate" class="text-gray-600 hover:text-blue-500 transition-colors">Real Estate</a>
-        <a href="#ai-bots" class="text-gray-600 hover:text-blue-500 transition-colors">AI Bot Solutions</a>
-        <a href="#pricing" class="text-gray-600 hover:text-blue-500 transition-colors">Pricing</a>
-        <a href="#contact" class="text-gray-600 hover:text-blue-500 transition-colors">Contact</a>
+        <a href="#home" class="text-gray-400 hover:text-blue-400 transition-colors">Home</a>
+        <a href="#services" class="text-gray-400 hover:text-blue-400 transition-colors">Services</a>
+        <a href="#additional" class="text-gray-400 hover:text-blue-400 transition-colors">Additional Services</a>
+        <a href="#virtual" class="text-gray-400 hover:text-blue-400 transition-colors">Virtual Services</a>
+        <a href="#pricing" class="text-gray-400 hover:text-blue-400 transition-colors">Pricing</a>
+        <a href="#contact" class="text-gray-400 hover:text-blue-400 transition-colors">Contact</a>
       </nav>
 
-      <!-- CTA Button -->
-      <a href="#contact" class="hidden md:block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium text-sm hover:shadow-lg transition-all duration-300">
-        Get Started
-      </a>
+      <a href="#contact" class="hidden md:block btn-primary">Get Started</a>
 
-      <!-- Mobile Menu Button -->
       <button id="mobileMenuBtn" class="md:hidden p-2">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -97,816 +228,563 @@
       </button>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200 py-4 px-6 space-y-4">
-      <a href="#home" class="block text-gray-600 hover:text-blue-500">Home</a>
-      <a href="#about" class="block text-gray-600 hover:text-blue-500">About</a>
-      <a href="#professional-services" class="block text-gray-600 hover:text-blue-500">Professional Services</a>
-      <a href="#real-estate" class="block text-gray-600 hover:text-blue-500">Real Estate</a>
-      <a href="#ai-bots" class="block text-gray-600 hover:text-blue-500">AI Bot Solutions</a>
-      <a href="#pricing" class="block text-gray-600 hover:text-blue-500">Pricing</a>
-      <a href="#contact" class="block text-gray-600 hover:text-blue-500">Contact</a>
+    <div id="mobileMenu" class="hidden md:hidden bg-gray-900 border-t border-gray-800 py-4 px-6 space-y-4">
+      <a href="#home" class="block text-gray-400 hover:text-blue-400">Home</a>
+      <a href="#services" class="block text-gray-400 hover:text-blue-400">Services</a>
+      <a href="#additional" class="block text-gray-400 hover:text-blue-400">Additional Services</a>
+      <a href="#virtual" class="block text-gray-400 hover:text-blue-400">Virtual Services</a>
+      <a href="#pricing" class="block text-gray-400 hover:text-blue-400">Pricing</a>
+      <a href="#contact" class="block text-gray-400 hover:text-blue-400">Contact</a>
     </div>
   </header>
 
   <!-- HERO SECTION -->
-  <section id="home" class="pt-32 pb-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6">
+  <section id="home" class="pt-32 pb-20 px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div class="max-w-7xl mx-auto">
       <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <!-- Left Content -->
-        <div class="fade-in-up">
-          <div class="inline-flex items-center space-x-2 bg-blue-100 px-4 py-2 rounded-full mb-6">
+        <div>
+          <div class="inline-flex items-center space-x-2 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-lg mb-8">
             <span class="text-2xl">✨</span>
-            <span class="text-sm font-medium text-blue-600">Professional Excellence + AI Innovation</span>
+            <span class="font-medium">Professional Excellence + AI Innovation</span>
           </div>
 
-          <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
             Transform Your Business with <span class="text-gradient">ProVantage Group</span>
           </h1>
 
-          <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-            Industry-leading professional services combined with cutting-edge AI automation. We provide comprehensive solutions for medical practices, legal firms, construction companies, real estate brokerages, and financial advisory—all powered by intelligent automation and expert support.
+          <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+            Industry-leading professional services combined with cutting-edge AI automation. Comprehensive solutions for medical practices, legal firms, construction, real estate, financial advisory, plus advanced AI bots and virtual services.
           </p>
 
           <div class="flex flex-col sm:flex-row gap-4">
-            <a href="#professional-services" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-              Explore Services
-            </a>
-            <a href="#ai-bots" class="bg-white text-blue-600 border-2 border-blue-500 px-8 py-3 rounded-lg font-medium hover:bg-blue-50 transition-all duration-300 text-center">
-              AI Bot Solutions
-            </a>
+            <a href="#services" class="btn-primary text-center">Explore All Services</a>
+            <a href="#pricing" class="btn-secondary text-center">View Pricing</a>
           </div>
 
-          <!-- Trust Indicators -->
-          <div class="flex items-center space-x-8 mt-12 pt-8 border-t border-gray-200">
+          <div class="flex items-center space-x-8 mt-12 pt-8 border-t border-gray-700">
             <div>
-              <div class="text-3xl font-bold text-gray-900">2,500+</div>
-              <p class="text-sm text-gray-600">Clients Served</p>
+              <div class="text-3xl font-bold text-blue-400">2,500+</div>
+              <p class="text-sm text-gray-400">Clients Served</p>
             </div>
             <div>
-              <div class="text-3xl font-bold text-gray-900">98%</div>
-              <p class="text-sm text-gray-600">Satisfaction Rate</p>
+              <div class="text-3xl font-bold text-blue-400">98%</div>
+              <p class="text-sm text-gray-400">Satisfaction Rate</p>
             </div>
             <div>
-              <div class="text-3xl font-bold text-gray-900">24/7</div>
-              <p class="text-sm text-gray-600">Support Available</p>
+              <div class="text-3xl font-bold text-blue-400">24/7</div>
+              <p class="text-sm text-gray-400">Support Available</p>
             </div>
           </div>
         </div>
 
-        <!-- Right Visual -->
         <div class="relative h-96 hidden lg:flex items-center justify-center">
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl blur-3xl opacity-60"></div>
-          <div class="relative z-10 w-full h-full rounded-3xl bg-white border-2 border-blue-200 shadow-2xl p-8 flex flex-col items-center justify-center space-y-6">
-            <span class="text-6xl">🚀</span>
-            <h3 class="text-2xl font-bold text-gray-900 text-center">
-              Enterprise Solutions
-            </h3>
-            <p class="text-center text-gray-600">
-              Professional Services + AI Automation
-            </p>
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-3xl"></div>
+          <div class="relative z-10 w-full h-full rounded-2xl border border-blue-500/50 p-8 flex flex-col items-center justify-center">
+            <span class="text-6xl mb-4">🚀</span>
+            <h3 class="text-2xl font-bold text-center">Enterprise Solutions</h3>
+            <p class="text-gray-400 mt-3">Professional Services + AI Automation</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ABOUT SECTION -->
-  <section id="about" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold text-gray-900 mb-4">About ProVantage Group</h2>
-        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-          We're a forward-thinking professional services company specializing in industry-specific solutions enhanced with artificial intelligence and automation technology.
-        </p>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl hover-lift">
-          <div class="text-4xl mb-4">🎯</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Our Mission</h3>
-          <p class="text-gray-700">
-            To empower professional businesses with intelligent technology solutions that streamline operations, reduce costs, and accelerate growth.
-          </p>
-        </div>
-
-        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl hover-lift">
-          <div class="text-4xl mb-4">💡</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Our Vision</h3>
-          <p class="text-gray-700">
-            To become the leading provider of integrated professional services and AI-powered automation across all industries.
-          </p>
-        </div>
-
-        <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-8 rounded-2xl hover-lift">
-          <div class="text-4xl mb-4">⭐</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Our Values</h3>
-          <p class="text-gray-700">
-            Excellence, innovation, integrity, and client-first service. We deliver results that matter.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROFESSIONAL SERVICES SECTION -->
-  <section id="professional-services" class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold text-gray-900 mb-4">Professional Services</h2>
-        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-          Comprehensive industry-specific solutions designed to optimize your business operations.
-        </p>
-      </div>
+  <!-- CORE PROFESSIONAL SERVICES -->
+  <section id="services" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="section-title">Core Professional Services</h2>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Medical Practice Management -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-green-200 p-8 service-card">
-          <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-2xl">⚕️</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Medical Practice Management</h3>
-          <p class="text-gray-600 mb-6">
-            Comprehensive clinic management with patient portals, appointment scheduling, HIPAA compliance, and billing automation.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-700">
-            <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Patient Management Systems</li>
-            <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Billing Automation</li>
-            <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> HIPAA Compliance Tools</li>
-            <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Telemedicine Integration</li>
+        <!-- Medical -->
+        <div class="card">
+          <div class="text-4xl mb-4">⚕️</div>
+          <h3 class="text-xl font-bold mb-3">Medical Practice Management</h3>
+          <p class="text-gray-400 mb-6">Patient portals, scheduling, HIPAA compliance, and billing automation.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Patient Management Systems</li>
+            <li>✓ Billing Automation</li>
+            <li>✓ HIPAA Compliance</li>
+            <li>✓ Telemedicine Integration</li>
           </ul>
-          <button class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-medium transition-colors">
-            Learn More
+          <button onclick="openPaymentModal('Medical Practice Management', 299, 'medical')" class="btn-primary w-full">
+            Deploy Now - $299/mo
           </button>
         </div>
 
-        <!-- Legal Services -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-blue-200 p-8 service-card">
-          <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-2xl">⚖️</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Legal Practice Support</h3>
-          <p class="text-gray-600 mb-6">
-            Advanced case management, document automation, client communication systems, and regulatory compliance tools for law firms.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-700">
-            <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Case Management</li>
-            <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Document Automation</li>
-            <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Client Portal</li>
-            <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Time Tracking</li>
+        <!-- Legal -->
+        <div class="card">
+          <div class="text-4xl mb-4">⚖️</div>
+          <h3 class="text-xl font-bold mb-3">Legal Practice Support</h3>
+          <p class="text-gray-400 mb-6">Case management, document automation, and compliance tools.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Case Management</li>
+            <li>✓ Document Automation</li>
+            <li>✓ Client Portal</li>
+            <li>✓ Time Tracking</li>
           </ul>
-          <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-medium transition-colors">
-            Learn More
+          <button onclick="openPaymentModal('Legal Practice Support', 399, 'legal')" class="btn-primary w-full">
+            Deploy Now - $399/mo
           </button>
         </div>
 
-        <!-- Construction Management -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-yellow-200 p-8 service-card">
-          <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-2xl">🏗️</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Construction Management</h3>
-          <p class="text-gray-600 mb-6">
-            Project management tools, contractor coordination, progress tracking, budget management, and safety compliance.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-700">
-            <li class="flex items-center"><span class="text-yellow-600 mr-2">✓</span> Project Tracking</li>
-            <li class="flex items-center"><span class="text-yellow-600 mr-2">✓</span> Resource Management</li>
-            <li class="flex items-center"><span class="text-yellow-600 mr-2">✓</span> Safety Compliance</li>
-            <li class="flex items-center"><span class="text-yellow-600 mr-2">✓</span> Quality Control</li>
+        <!-- Construction -->
+        <div class="card">
+          <div class="text-4xl mb-4">🏗️</div>
+          <h3 class="text-xl font-bold mb-3">Construction Management</h3>
+          <p class="text-gray-400 mb-6">Project tracking, contractor coordination, and safety compliance.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Project Tracking</li>
+            <li>✓ Resource Management</li>
+            <li>✓ Safety Compliance</li>
+            <li>✓ Quality Control</li>
           </ul>
-          <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg font-medium transition-colors">
-            Learn More
+          <button onclick="openPaymentModal('Construction Management', 349, 'construction')" class="btn-primary w-full">
+            Deploy Now - $349/mo
           </button>
         </div>
 
-        <!-- Financial Services -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-purple-200 p-8 service-card">
-          <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-2xl">📊</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Financial Advisory</h3>
-          <p class="text-gray-600 mb-6">
-            Comprehensive financial planning, investment management, crypto portfolio optimization, and tax strategies.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-700">
-            <li class="flex items-center"><span class="text-purple-500 mr-2">✓</span> Portfolio Management</li>
-            <li class="flex items-center"><span class="text-purple-500 mr-2">✓</span> Risk Assessment</li>
-            <li class="flex items-center"><span class="text-purple-500 mr-2">✓</span> Tax Optimization</li>
-            <li class="flex items-center"><span class="text-purple-500 mr-2">✓</span> Crypto Integration</li>
+        <!-- Financial -->
+        <div class="card">
+          <div class="text-4xl mb-4">📊</div>
+          <h3 class="text-xl font-bold mb-3">Financial Advisory</h3>
+          <p class="text-gray-400 mb-6">Portfolio management, risk assessment, and crypto integration.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Portfolio Management</li>
+            <li>✓ Risk Assessment</li>
+            <li>✓ Tax Optimization</li>
+            <li>✓ Crypto Integration</li>
           </ul>
-          <button class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg font-medium transition-colors">
-            Learn More
+          <button onclick="openPaymentModal('Financial Advisory', 599, 'financial')" class="btn-primary w-full">
+            Deploy Now - $599/mo
           </button>
         </div>
 
-        <!-- Real Estate Services (Basic) -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-red-200 p-8 service-card">
-          <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-2xl">🏠</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Real Estate Services</h3>
-          <p class="text-gray-600 mb-6">
-            Comprehensive brokerage solutions including sales, leasing, property management, staging, and crypto transactions.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-700">
-            <li class="flex items-center"><span class="text-red-500 mr-2">✓</span> Sales & Leasing</li>
-            <li class="flex items-center"><span class="text-red-500 mr-2">✓</span> Property Management</li>
-            <li class="flex items-center"><span class="text-red-500 mr-2">✓</span> Staging & Upgrades</li>
-            <li class="flex items-center"><span class="text-red-500 mr-2">✓</span> Crypto Transactions</li>
+        <!-- Real Estate -->
+        <div class="card">
+          <div class="text-4xl mb-4">🏠</div>
+          <h3 class="text-xl font-bold mb-3">Real Estate Brokerage</h3>
+          <p class="text-gray-400 mb-6">Sales, leasing, property management, and staging services.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Sales & Leasing</li>
+            <li>✓ Property Management</li>
+            <li>✓ Staging & Upgrades</li>
+            <li>✓ Crypto Integration</li>
           </ul>
-          <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition-colors">
-            Learn More
+          <button onclick="openPaymentModal('Real Estate Brokerage', 799, 'realestate')" class="btn-primary w-full">
+            Deploy Now - $799/mo
           </button>
         </div>
 
-        <!-- Innovation Lab -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-cyan-200 p-8 service-card">
-          <div class="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-2xl">⚡</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Innovation Lab</h3>
-          <p class="text-gray-600 mb-6">
-            Cutting-edge technology demonstrations, blockchain integration, and future-ready business solutions.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-700">
-            <li class="flex items-center"><span class="text-cyan-500 mr-2">✓</span> Tech Demonstrations</li>
-            <li class="flex items-center"><span class="text-cyan-500 mr-2">✓</span> Blockchain Solutions</li>
-            <li class="flex items-center"><span class="text-cyan-500 mr-2">✓</span> AI Integration</li>
-            <li class="flex items-center"><span class="text-cyan-500 mr-2">✓</span> Future Solutions</li>
+        <!-- AI Bots -->
+        <div class="card">
+          <div class="text-4xl mb-4">⚡</div>
+          <h3 class="text-xl font-bold mb-3">AI Bot Solutions</h3>
+          <p class="text-gray-400 mb-6">Brand protection, lead generation, competitor monitoring.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Brand Protection</li>
+            <li>✓ Lead Generation</li>
+            <li>✓ Fraud Detection</li>
+            <li>✓ Competitor Monitoring</li>
           </ul>
-          <button class="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-2 rounded-lg font-medium transition-colors">
-            Learn More
+          <button onclick="openPaymentModal('Complete AI Bot Suite', 2000, 'ai')" class="btn-primary w-full">
+            Deploy Now - $2,000/mo
           </button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- REAL ESTATE BROKERAGE SECTION -->
-  <section id="real-estate" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold text-gray-900 mb-4">Real Estate Brokerage Services</h2>
-        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-          Full-service real estate solutions covering sales, leasing, property management, staging, and modern payment integration.
-        </p>
-      </div>
+  <!-- ADDITIONAL SERVICES -->
+  <section id="additional" class="py-20 px-6 bg-gray-900">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="section-title">Additional Services & Integrations</h2>
 
-      <!-- Real Estate Services Grid -->
-      <div class="grid md:grid-cols-2 gap-8 mb-16">
-        <!-- Sales & Leasing -->
-        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-8 hover-lift">
-          <div class="w-16 h-16 bg-red-500 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-3xl">📋</span>
-          </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-4">Sales & Leasing</h3>
-          <p class="text-gray-700 mb-6">
-            Expert property sales and leasing services with comprehensive market analysis, property showcasing, and negotiation support.
-          </p>
-          <ul class="space-y-3 text-gray-700">
-            <li class="flex items-start">
-              <span class="text-red-500 font-bold mr-3">•</span>
-              <span>MLS Integration & Listing Management</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-red-500 font-bold mr-3">•</span>
-              <span>Buyer & Tenant Matching</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-red-500 font-bold mr-3">•</span>
-              <span>Contract Negotiation & Management</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-red-500 font-bold mr-3">•</span>
-              <span>Closing Coordination</span>
-            </li>
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- API Integrations -->
+        <div class="card">
+          <div class="text-4xl mb-4">🔗</div>
+          <h3 class="text-xl font-bold mb-3">API Integrations</h3>
+          <p class="text-gray-400 mb-6">Seamless integration with CRMs, ERPs, payment gateways, analytics tools, and internal systems.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ CRM Integration</li>
+            <li>✓ Payment Gateway Setup</li>
+            <li>✓ Analytics Tools</li>
+            <li>✓ Custom Connectors</li>
           </ul>
+          <button onclick="openPaymentModal('API Integrations', 499, 'api')" class="btn-primary w-full">
+            Deploy Now - $499/mo
+          </button>
         </div>
 
-        <!-- Property Management -->
-        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 hover-lift">
-          <div class="w-16 h-16 bg-orange-500 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-3xl">🔑</span>
-          </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-4">Property Management</h3>
-          <p class="text-gray-700 mb-6">
-            Complete property management solutions including tenant relations, maintenance coordination, rent collection, and financial reporting.
-          </p>
-          <ul class="space-y-3 text-gray-700">
-            <li class="flex items-start">
-              <span class="text-orange-500 font-bold mr-3">•</span>
-              <span>Tenant Relations & Screening</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-orange-500 font-bold mr-3">•</span>
-              <span>Rent Collection & Accounting</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-orange-500 font-bold mr-3">•</span>
-              <span>Maintenance Coordination</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-orange-500 font-bold mr-3">•</span>
-              <span>Financial Reporting & Analysis</span>
-            </li>
+        <!-- Custom Web & SaaS Development -->
+        <div class="card">
+          <div class="text-4xl mb-4">💻</div>
+          <h3 class="text-xl font-bold mb-3">Custom Web & SaaS Development</h3>
+          <p class="text-gray-400 mb-6">Full-stack development of dashboards, client portals, admin panels, and SaaS platforms.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Dashboard Development</li>
+            <li>✓ Client Portals</li>
+            <li>✓ Admin Panels</li>
+            <li>✓ SaaS Platforms</li>
           </ul>
+          <button onclick="openPaymentModal('Custom Web & SaaS Development', 1500, 'saas')" class="btn-primary w-full">
+            Deploy Now - $1,500/mo
+          </button>
         </div>
 
-        <!-- Staging & Upgrades -->
-        <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-8 hover-lift">
-          <div class="w-16 h-16 bg-pink-500 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-3xl">🎨</span>
-          </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-4">Staging & Upgrades</h3>
-          <p class="text-gray-700 mb-6">
-            Professional property staging, interior design recommendations, and upgrade consulting to maximize property value and appeal.
-          </p>
-          <ul class="space-y-3 text-gray-700">
-            <li class="flex items-start">
-              <span class="text-pink-500 font-bold mr-3">•</span>
-              <span>Professional Home Staging</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-pink-500 font-bold mr-3">•</span>
-              <span>Interior Design Consultation</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-pink-500 font-bold mr-3">•</span>
-              <span>Upgrade & Renovation Guidance</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-pink-500 font-bold mr-3">•</span>
-              <span>Virtual Tours & 3D Walkthroughs</span>
-            </li>
+        <!-- AI Infrastructure & Deployment -->
+        <div class="card">
+          <div class="text-4xl mb-4">☁️</div>
+          <h3 class="text-xl font-bold mb-3">AI Infrastructure & Deployment</h3>
+          <p class="text-gray-400 mb-6">Cloud deployment, secure hosting, automation pipelines, and scalable AI infrastructure.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Cloud Deployment</li>
+            <li>✓ Secure Hosting</li>
+            <li>✓ Automation Pipelines</li>
+            <li>✓ Infrastructure Scaling</li>
           </ul>
-        </div>
-
-        <!-- Investment & Crypto -->
-        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 hover-lift">
-          <div class="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mb-6">
-            <span class="text-3xl">💎</span>
-          </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-4">Investment & Crypto Integration</h3>
-          <p class="text-gray-700 mb-6">
-            Real estate investment strategies with modern payment solutions including cryptocurrency, fractional ownership, and smart contracts.
-          </p>
-          <ul class="space-y-3 text-gray-700">
-            <li class="flex items-start">
-              <span class="text-purple-500 font-bold mr-3">•</span>
-              <span>Investment Property Analysis</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-purple-500 font-bold mr-3">•</span>
-              <span>Crypto Payment Processing</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-purple-500 font-bold mr-3">•</span>
-              <span>Fractional Ownership Models</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-purple-500 font-bold mr-3">•</span>
-              <span>Smart Contract Integration</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Real Estate ROI Calculator -->
-      <div class="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-12 text-white">
-        <h3 class="text-3xl font-bold mb-6 text-center">Real Estate ROI Calculator</h3>
-        <div class="grid md:grid-cols-3 gap-6">
-          <div>
-            <label class="block text-sm font-medium mb-2">Property Value ($)</label>
-            <input type="number" id="propertyValue" placeholder="500000" class="w-full px-4 py-2 rounded-lg text-gray-900" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">Annual Rent ($)</label>
-            <input type="number" id="annualRent" placeholder="60000" class="w-full px-4 py-2 rounded-lg text-gray-900" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2">Annual Expenses ($)</label>
-            <input type="number" id="annualExpenses" placeholder="15000" class="w-full px-4 py-2 rounded-lg text-gray-900" />
-          </div>
-        </div>
-        <button onclick="calculateRealEstateROI()" class="w-full mt-6 bg-white text-red-500 font-bold py-3 rounded-lg hover:bg-gray-100 transition-colors">
-          Calculate ROI
-        </button>
-        <div id="roiResults" class="hidden mt-6 p-6 bg-white/20 rounded-lg">
-          <p class="text-lg mb-2"><strong>Annual Net Income:</strong> <span id="netIncome">$45,000</span></p>
-          <p class="text-lg mb-2"><strong>ROI %:</strong> <span id="roiPercent">9%</span></p>
-          <p class="text-lg"><strong>Payback Period:</strong> <span id="paybackPeriod">11.1 years</span></p>
+          <button onclick="openPaymentModal('AI Infrastructure & Deployment', 999, 'infrastructure')" class="btn-primary w-full">
+            Deploy Now - $999/mo
+          </button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- AI BOT SOLUTIONS SECTION -->
-  <section id="ai-bots" class="py-20 bg-gray-950 text-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">AI Bot Solutions</h2>
-        <p class="text-lg text-gray-400 max-w-3xl mx-auto">
-          Intelligent automation for brand protection, lead generation, competitor monitoring, and fraud detection. Deploy instantly with automated provisioning.
-        </p>
-      </div>
+  <!-- VIRTUAL SERVICES -->
+  <section id="virtual" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="section-title">Virtual Services</h2>
 
-      <!-- AI Bots Grid -->
-      <div class="grid md:grid-cols-2 gap-8 mb-16">
-        <!-- Social Media Impersonation Detection -->
-        <div class="bg-gray-800 rounded-2xl p-8 border-2 border-red-500 hover-lift">
-          <div class="text-3xl mb-4">🛡️</div>
-          <h3 class="text-xl font-bold mb-3">Social Media Impersonation Detection</h3>
-          <p class="text-gray-400 mb-6">
-            Continuously scans Instagram, LinkedIn, TikTok, Twitter, Facebook, and YouTube to detect fake accounts impersonating your brand.
-          </p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Virtual Consultation -->
+        <div class="card">
+          <div class="text-4xl mb-4">💬</div>
+          <h3 class="text-xl font-bold mb-3">Virtual Consultation</h3>
+          <p class="text-gray-400 mb-6">Expert 1-on-1 consultations via video call with industry specialists.</p>
           <ul class="space-y-2 mb-6 text-sm text-gray-400">
-            <li>✓ Detect fake profiles using your brand name</li>
-            <li>✓ Identify impersonating executives</li>
-            <li>✓ Monitor social platforms 24/7</li>
-            <li>✓ Provide evidence for takedowns</li>
+            <li>✓ 60-minute sessions</li>
+            <li>✓ Industry experts</li>
+            <li>✓ Strategic guidance</li>
+            <li>✓ Recording included</li>
           </ul>
-          <span class="inline-block bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-medium">$500/mo</span>
-        </div>
-
-        <!-- Brand Protection Suite -->
-        <div class="bg-gray-800 rounded-2xl p-8 border-2 border-blue-500 hover-lift">
-          <div class="text-3xl mb-4">⚙️</div>
-          <h3 class="text-xl font-bold mb-3">Trademark Infringement Detection</h3>
-          <p class="text-gray-400 mb-6">
-            Scans the internet and social media for unauthorized use of trademarks, logos, and brand names globally.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-400">
-            <li>✓ Monitor trademark usage worldwide</li>
-            <li>✓ Detect counterfeit products</li>
-            <li>✓ Generate takedown reports</li>
-            <li>✓ Real-time notifications</li>
-          </ul>
-          <span class="inline-block bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs font-medium">$1,000/mo</span>
-        </div>
-
-        <!-- Lead Generation Intelligence -->
-        <div class="bg-gray-800 rounded-2xl p-8 border-2 border-green-500 hover-lift">
-          <div class="text-3xl mb-4">👥</div>
-          <h3 class="text-xl font-bold mb-3">Lead Generation Intelligence Bot</h3>
-          <p class="text-gray-400 mb-6">
-            Automatically identifies high-value potential clients across the web, social media, and industry directories.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-400">
-            <li>✓ Extract qualified leads automatically</li>
-            <li>✓ Validate contact information</li>
-            <li>✓ Categorize by industry and size</li>
-            <li>✓ Direct CRM integration</li>
-          </ul>
-          <span class="inline-block bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-medium">$800/mo</span>
-        </div>
-
-        <!-- Competitor Monitoring -->
-        <div class="bg-gray-800 rounded-2xl p-8 border-2 border-yellow-500 hover-lift">
-          <div class="text-3xl mb-4">📊</div>
-          <h3 class="text-xl font-bold mb-3">Competitor Monitoring Bot</h3>
-          <p class="text-gray-400 mb-6">
-            Tracks competitor pricing, products, marketing strategies, and strategic changes in real-time.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-400">
-            <li>✓ Monitor competitor websites</li>
-            <li>✓ Track price changes</li>
-            <li>✓ Analyze marketing campaigns</li>
-            <li>✓ Strategic alert dashboard</li>
-          </ul>
-          <span class="inline-block bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-medium">$600/mo</span>
-        </div>
-
-        <!-- Real Estate Intelligence -->
-        <div class="bg-gray-800 rounded-2xl p-8 border-2 border-purple-500 hover-lift">
-          <div class="text-3xl mb-4">🏠</div>
-          <h3 class="text-xl font-bold mb-3">Real Estate Intelligence Bot</h3>
-          <p class="text-gray-400 mb-6">
-            Detects distressed properties, off-market opportunities, and listing manipulation across MLS and online platforms.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-400">
-            <li>✓ Identify distressed properties</li>
-            <li>✓ Monitor off-market deals</li>
-            <li>✓ Detect listing manipulation</li>
-            <li>✓ Automated property alerts</li>
-          </ul>
-          <span class="inline-block bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-xs font-medium">$700/mo</span>
-        </div>
-
-        <!-- Fraud & Scam Detection -->
-        <div class="bg-gray-800 rounded-2xl p-8 border-2 border-pink-500 hover-lift">
-          <div class="text-3xl mb-4">🚨</div>
-          <h3 class="text-xl font-bold mb-3">Fraud & Scam Detection Bot</h3>
-          <p class="text-gray-400 mb-6">
-            Identifies fraudulent websites, fake businesses, phishing attempts, and impersonation scams targeting your customers.
-          </p>
-          <ul class="space-y-2 mb-6 text-sm text-gray-400">
-            <li>✓ Detect fraudulent websites</li>
-            <li>✓ Identify phishing campaigns</li>
-            <li>✓ Monitor for customer scams</li>
-            <li>✓ Automated fraud alerts</li>
-          </ul>
-          <span class="inline-block bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-xs font-medium">$900/mo</span>
-        </div>
-      </div>
-
-      <!-- Live Demo -->
-      <div class="bg-gray-800 rounded-2xl p-12 border-2 border-blue-500 text-center mb-16">
-        <h3 class="text-3xl font-bold mb-6">Live AI Bot Demo</h3>
-        <p class="text-gray-400 mb-8">Enter your brand name to simulate AI detection capabilities</p>
-        <div class="max-w-md mx-auto">
-          <input 
-            type="text" 
-            id="demoInput"
-            placeholder="Enter brand name (e.g., Tesla, Your Company)" 
-            class="w-full px-6 py-3 rounded-lg bg-gray-900 border-2 border-gray-700 text-white mb-4"
-          />
-          <button onclick="runBotDemo()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Scan for Threats
+          <button onclick="openPaymentModal('Virtual Consultation Package', 299, 'consultation')" class="btn-primary w-full">
+            Book Now - $299/session
           </button>
-          <div id="demoResults" class="hidden mt-6 text-left bg-gray-900 p-6 rounded-lg">
-            <p class="text-green-400 font-bold mb-4">✓ Scan Complete</p>
-            <p class="text-gray-400 mb-4">Detected Potential Threats:</p>
-            <ul class="space-y-2 text-red-400 text-sm">
-              <li>⚠️ Fake LinkedIn profile with similar brand name</li>
-              <li>⚠️ Instagram account copying brand logo</li>
-              <li>⚠️ Twitter account impersonating official brand</li>
-              <li>⚠️ Facebook page pretending to represent company</li>
-            </ul>
-            <p class="text-green-400 mt-4 font-bold">✓ Deploy bot for full automated monitoring</p>
-          </div>
+        </div>
+
+        <!-- Virtual Training & Workshops -->
+        <div class="card">
+          <div class="text-4xl mb-4">🎓</div>
+          <h3 class="text-xl font-bold mb-3">Virtual Training & Workshops</h3>
+          <p class="text-gray-400 mb-6">Comprehensive online training programs for team skill development.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Live workshops</li>
+            <li>✓ Recorded sessions</li>
+            <li>✓ Certification available</li>
+            <li>✓ Custom curriculum</li>
+          </ul>
+          <button onclick="openPaymentModal('Virtual Training & Workshops', 1999, 'training')" class="btn-primary w-full">
+            Enroll Now - $1,999/program
+          </button>
+        </div>
+
+        <!-- Virtual Administrative Support -->
+        <div class="card">
+          <div class="text-4xl mb-4">📋</div>
+          <h3 class="text-xl font-bold mb-3">Virtual Administrative Support</h3>
+          <p class="text-gray-400 mb-6">Remote administrative services for scheduling, data entry, and organization.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Scheduling management</li>
+            <li>✓ Data entry services</li>
+            <li>✓ Email management</li>
+            <li>✓ Document organization</li>
+          </ul>
+          <button onclick="openPaymentModal('Virtual Administrative Support', 799, 'admin')" class="btn-primary w-full">
+            Subscribe Now - $799/mo
+          </button>
+        </div>
+
+        <!-- Virtual Marketing Management -->
+        <div class="card">
+          <div class="text-4xl mb-4">📢</div>
+          <h3 class="text-xl font-bold mb-3">Virtual Marketing Management</h3>
+          <p class="text-gray-400 mb-6">Complete digital marketing strategy and campaign execution from remote experts.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Social media management</li>
+            <li>✓ Email marketing</li>
+            <li>✓ Content creation</li>
+            <li>✓ Campaign analytics</li>
+          </ul>
+          <button onclick="openPaymentModal('Virtual Marketing Management', 1299, 'marketing')" class="btn-primary w-full">
+            Subscribe Now - $1,299/mo
+          </button>
+        </div>
+
+        <!-- Virtual HR & Recruitment Services -->
+        <div class="card">
+          <div class="text-4xl mb-4">👥</div>
+          <h3 class="text-xl font-bold mb-3">Virtual HR & Recruitment</h3>
+          <p class="text-gray-400 mb-6">Remote human resources and talent acquisition services for your business.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ Candidate screening</li>
+            <li>✓ HR policy development</li>
+            <li>✓ Payroll management</li>
+            <li>✓ Employee onboarding</li>
+          </ul>
+          <button onclick="openPaymentModal('Virtual HR & Recruitment Services', 999, 'hr')" class="btn-primary w-full">
+            Subscribe Now - $999/mo
+          </button>
+        </div>
+
+        <!-- Virtual IT Support -->
+        <div class="card">
+          <div class="text-4xl mb-4">🖥️</div>
+          <h3 class="text-xl font-bold mb-3">Virtual IT Support</h3>
+          <p class="text-gray-400 mb-6">24/7 remote technical support and IT infrastructure management.</p>
+          <ul class="space-y-2 mb-6 text-sm text-gray-400">
+            <li>✓ 24/7 helpdesk support</li>
+            <li>✓ System monitoring</li>
+            <li>✓ Security management</li>
+            <li>✓ Troubleshooting</li>
+          </ul>
+          <button onclick="openPaymentModal('Virtual IT Support', 1199, 'it')" class="btn-primary w-full">
+            Subscribe Now - $1,199/mo
+          </button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- PRICING SECTION -->
-  <section id="pricing" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold text-gray-900 mb-4">Pricing & Plans</h2>
-        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-          Flexible pricing options for all business sizes. Choose professional services, AI bots, real estate solutions, or bundled packages.
-        </p>
-      </div>
+  <section id="pricing" class="py-20 px-6 bg-gray-900">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="section-title">Transparent Pricing</h2>
 
-      <!-- Pricing Tabs -->
-      <div class="flex justify-center gap-4 mb-12">
-        <button onclick="showPricing('services')" class="px-6 py-2 rounded-lg font-medium border-2 border-blue-500 text-blue-500 hover:bg-blue-50 transition-colors">
-          Professional Services
-        </button>
-        <button onclick="showPricing('ai')" class="px-6 py-2 rounded-lg font-medium border-2 border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">
-          AI Bots
-        </button>
-        <button onclick="showPricing('realestate')" class="px-6 py-2 rounded-lg font-medium border-2 border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors">
-          Real Estate
-        </button>
-      </div>
-
-      <!-- Professional Services Pricing -->
-      <div id="services-pricing" class="grid md:grid-cols-3 gap-8 mb-16">
+      <div class="grid md:grid-cols-3 gap-8">
         <!-- Starter -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 hover:shadow-xl transition-shadow">
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
-          <p class="text-gray-600 mb-6">For small practices</p>
-          <div class="text-4xl font-bold text-gray-900 mb-6">$299<span class="text-lg text-gray-600">/mo</span></div>
-          <ul class="space-y-3 mb-8 text-gray-700">
-            <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✓</span> 1 Service Area</li>
-            <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✓</span> Basic Automation</li>
-            <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✓</span> Email Support</li>
-            <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✓</span> Monthly Reports</li>
+        <div class="card">
+          <h3 class="text-2xl font-bold mb-2">Starter</h3>
+          <p class="text-gray-400 mb-6">Perfect for small teams</p>
+          <div class="text-4xl font-bold text-blue-400 mb-6">$299<span class="text-lg text-gray-400">/mo</span></div>
+          <ul class="space-y-3 mb-8 text-gray-400">
+            <li>✓ 1 Service Area</li>
+            <li>✓ Basic Automation</li>
+            <li>✓ Email Support</li>
+            <li>✓ Monthly Reports</li>
           </ul>
-          <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Get Started
+          <button onclick="openPaymentModal('Starter Plan', 299, 'starter')" class="btn-primary w-full">
+            Subscribe Now
           </button>
         </div>
 
-        <!-- Professional -->
-        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl shadow-lg border-2 border-blue-500 p-8 hover:shadow-xl transition-shadow transform scale-105">
-          <div class="bg-blue-500 text-white px-4 py-1 rounded-full text-xs font-bold inline-block mb-4">MOST POPULAR</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Professional</h3>
-          <p class="text-gray-600 mb-6">For growing businesses</p>
-          <div class="text-4xl font-bold text-gray-900 mb-6">$599<span class="text-lg text-gray-600">/mo</span></div>
-          <ul class="space-y-3 mb-8 text-gray-700">
-            <li class="flex items-center"><span class="text-blue-500 font-bold mr-2">✓</span> 3 Service Areas</li>
-            <li class="flex items-center"><span class="text-blue-500 font-bold mr-2">✓</span> Advanced Automation</li>
-            <li class="flex items-center"><span class="text-blue-500 font-bold mr-2">✓</span> Priority Support</li>
-            <li class="flex items-center"><span class="text-blue-500 font-bold mr-2">✓</span> Real-time Analytics</li>
+        <!-- Professional (Highlighted) -->
+        <div class="card" style="border-color: var(--primary); border-width: 2px; transform: scale(1.05);">
+          <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold inline-block mb-4">MOST POPULAR</div>
+          <h3 class="text-2xl font-bold mb-2">Professional</h3>
+          <p class="text-gray-400 mb-6">Best for growing businesses</p>
+          <div class="text-4xl font-bold text-blue-400 mb-6">$599<span class="text-lg text-gray-400">/mo</span></div>
+          <ul class="space-y-3 mb-8 text-gray-400">
+            <li>✓ 3 Service Areas</li>
+            <li>✓ Advanced Automation</li>
+            <li>✓ Priority Support</li>
+            <li>✓ Real-time Analytics</li>
           </ul>
-          <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Get Started
+          <button onclick="openPaymentModal('Professional Plan', 599, 'professional')" class="btn-primary w-full">
+            Subscribe Now
           </button>
         </div>
 
         <!-- Enterprise -->
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 hover:shadow-xl transition-shadow">
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">Enterprise</h3>
-          <p class="text-gray-600 mb-6">For large organizations</p>
-          <div class="text-4xl font-bold text-gray-900 mb-6">Custom<span class="text-lg text-gray-600">/mo</span></div>
-          <ul class="space-y-3 mb-8 text-gray-700">
-            <li class="flex items-center"><span class="text-purple-500 font-bold mr-2">✓</span> Unlimited Services</li>
-            <li class="flex items-center"><span class="text-purple-500 font-bold mr-2">✓</span> Custom Integration</li>
-            <li class="flex items-center"><span class="text-purple-500 font-bold mr-2">✓</span> 24/7 Dedicated Support</li>
-            <li class="flex items-center"><span class="text-purple-500 font-bold mr-2">✓</span> Custom Solutions</li>
+        <div class="card">
+          <h3 class="text-2xl font-bold mb-2">Enterprise</h3>
+          <p class="text-gray-400 mb-6">For large organizations</p>
+          <div class="text-4xl font-bold text-blue-400 mb-6">Custom</div>
+          <ul class="space-y-3 mb-8 text-gray-400">
+            <li>✓ Unlimited Services</li>
+            <li>✓ Custom Integration</li>
+            <li>✓ 24/7 Dedicated Support</li>
+            <li>✓ Custom Solutions</li>
           </ul>
-          <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition-colors">
-            Contact Sales
-          </button>
-        </div>
-      </div>
-
-      <!-- AI Bots Pricing -->
-      <div id="ai-pricing" class="hidden grid md:grid-cols-3 gap-8 mb-16">
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8">
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Brand Protection</h3>
-          <div class="text-3xl font-bold text-gray-900 mb-6">$500<span class="text-lg text-gray-600">/mo</span></div>
-          <p class="text-gray-600 mb-6">Social media & impersonation detection</p>
-          <button class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Deploy Now
-          </button>
-        </div>
-
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg border-2 border-blue-500 p-8 transform scale-105">
-          <div class="bg-blue-500 text-white px-4 py-1 rounded-full text-xs font-bold inline-block mb-4">RECOMMENDED</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Complete Suite</h3>
-          <div class="text-3xl font-bold text-gray-900 mb-6">$2,000<span class="text-lg text-gray-600">/mo</span></div>
-          <p class="text-gray-600 mb-6">All AI bots + advanced features</p>
-          <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Deploy Now
-          </button>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8">
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Enterprise AI</h3>
-          <div class="text-3xl font-bold text-gray-900 mb-6">Custom</div>
-          <p class="text-gray-600 mb-6">Custom bot deployment + unlimited</p>
-          <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition-colors">
-            Request Quote
-          </button>
-        </div>
-      </div>
-
-      <!-- Real Estate Pricing -->
-      <div id="realestate-pricing" class="hidden grid md:grid-cols-3 gap-8 mb-16">
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8">
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Brokerage Starter</h3>
-          <div class="text-3xl font-bold text-gray-900 mb-6">3%<span class="text-lg text-gray-600"> commission</span></div>
-          <p class="text-gray-600 mb-6">Sales & basic property management</p>
-          <button class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Contact Agent
-          </button>
-        </div>
-
-        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-lg border-2 border-orange-500 p-8 transform scale-105">
-          <div class="bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold inline-block mb-4">BEST VALUE</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Full Service</h3>
-          <div class="text-3xl font-bold text-gray-900 mb-6">2.5%<span class="text-lg text-gray-600"> commission</span></div>
-          <p class="text-gray-600 mb-6">Complete brokerage + staging + crypto</p>
-          <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition-colors">
-            Contact Agent
-          </button>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8">
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Investment Focused</h3>
-          <div class="text-3xl font-bold text-gray-900 mb-6">Custom</div>
-          <p class="text-gray-600 mb-6">Portfolio management + crypto integration</p>
-          <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition-colors">
-            Schedule Consultation
-          </button>
+          <a href="#contact" class="btn-secondary w-full text-center block">Contact Sales</a>
         </div>
       </div>
 
       <!-- Payment Methods -->
-      <div class="bg-gray-100 rounded-2xl p-8 text-center">
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">Flexible Payment Options</h3>
-        <p class="text-gray-600 mb-8">We accept all major payment methods for your convenience</p>
+      <div class="bg-slate-800 rounded-2xl p-8 text-center mt-16">
+        <h3 class="text-2xl font-bold text-white mb-4">Flexible Payment Options</h3>
+        <p class="text-gray-400 mb-8">We accept all major payment methods for your convenience</p>
         <div class="flex justify-center gap-8 flex-wrap">
           <div class="flex items-center space-x-2">
             <span class="text-2xl">💳</span>
-            <span class="text-gray-700 font-medium">Credit Card</span>
+            <span class="text-gray-300 font-medium">Credit Card</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="text-2xl">🅿️</span>
-            <span class="text-gray-700 font-medium">PayPal</span>
+            <span class="text-gray-300 font-medium">PayPal</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="text-2xl">🔗</span>
-            <span class="text-gray-700 font-medium">Stripe</span>
+            <span class="text-gray-300 font-medium">Stripe</span>
           </div>
           <div class="flex items-center space-x-2">
             <span class="text-2xl">₿</span>
-            <span class="text-gray-700 font-medium">Cryptocurrency</span>
-          </div>
-          <div class="flex items-center space-x-2">
-            <span class="text-2xl">💰</span>
-            <span class="text-gray-700 font-medium">Bank Transfer</span>
+            <span class="text-gray-300 font-medium">Cryptocurrency</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT SECTION -->
-  <section id="contact" class="py-20 bg-gradient-to-br from-gray-900 to-gray-950 text-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid lg:grid-cols-2 gap-12">
-        <!-- Contact Form -->
+  <!-- PAYMENT MODAL -->
+  <div id="paymentModal" class="payment-modal">
+    <div class="modal-content">
+      <div class="flex justify-between items-start mb-6">
         <div>
-          <h2 class="text-4xl font-bold mb-6">Get in Touch</h2>
-          <p class="text-gray-400 mb-8">
-            Have questions? Our team is ready to help you find the perfect solution for your business.
-          </p>
-          
+          <h3 class="text-2xl font-bold mb-2" id="modalTitle">Service Deployment</h3>
+          <p class="text-lg font-semibold text-blue-400" id="modalPrice">$299/month</p>
+        </div>
+        <button onclick="closePaymentModal()" class="text-2xl text-gray-400 hover:text-white">&times;</button>
+      </div>
+
+      <!-- Payment Method Tabs -->
+      <div class="payment-tabs">
+        <button class="payment-tab active" onclick="switchPaymentMethod('paypal')">🅿️ PayPal</button>
+        <button class="payment-tab" onclick="switchPaymentMethod('stripe')">💳 Stripe</button>
+        <button class="payment-tab" onclick="switchPaymentMethod('crypto')">₿ Crypto</button>
+      </div>
+
+      <!-- PayPal Payment -->
+      <div id="paypal-content" class="payment-content show">
+        <p class="text-gray-400 mb-6">You'll be securely redirected to PayPal to complete your payment.</p>
+        <a href="https://www.paypal.com" target="_blank" class="btn-paypal btn-payment">
+          Proceed to PayPal
+        </a>
+      </div>
+
+      <!-- Stripe Payment -->
+      <div id="stripe-content" class="payment-content">
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Card Holder Name</label>
+          <input type="text" placeholder="John Doe" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Card Number</label>
+          <input type="text" placeholder="4242 4242 4242 4242" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">Expiry</label>
+            <input type="text" placeholder="MM/YY" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">CVC</label>
+            <input type="text" placeholder="123" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+          </div>
+        </div>
+        <button onclick="processStripePayment()" class="btn-stripe btn-payment">
+          Pay with Stripe
+        </button>
+      </div>
+
+      <!-- Crypto Payment -->
+      <div id="crypto-content" class="payment-content">
+        <p class="text-gray-400 mb-6">Connect your MetaMask wallet to pay with cryptocurrency. Accepts ETH, USDT, BTC, and more.</p>
+        <button onclick="connectCryptoWallet()" class="btn-crypto btn-payment">
+          Connect MetaMask Wallet
+        </button>
+        <p class="text-xs text-gray-500 text-center mt-4">Your transaction is secure and encrypted.</p>
+      </div>
+
+      <p class="text-xs text-gray-500 text-center mt-6">Your subscription will be activated immediately after payment confirmation.</p>
+    </div>
+  </div>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="py-20 px-6 bg-slate-800">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="section-title">Contact Us</h2>
+
+      <div class="grid lg:grid-cols-2 gap-12">
+        <div>
           <form class="space-y-6">
             <div>
               <label class="block text-sm font-medium mb-2">Full Name</label>
-              <input type="text" placeholder="Your Name" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" required />
+              <input type="text" placeholder="Your Name" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" required />
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-2">Email Address</label>
-              <input type="email" placeholder="your@email.com" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" required />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Phone Number</label>
-              <input type="tel" placeholder="+1 (555) 123-4567" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" />
+              <input type="email" placeholder="your@email.com" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500" required />
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-2">Service of Interest</label>
-              <select class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-blue-500">
+              <select class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500" required>
                 <option value="">Select a service</option>
                 <option value="medical">Medical Practice Management</option>
-                <option value="legal">Legal Services</option>
+                <option value="legal">Legal Practice Support</option>
                 <option value="construction">Construction Management</option>
-                <option value="real-estate">Real Estate Services</option>
                 <option value="financial">Financial Advisory</option>
-                <option value="ai-bots">AI Bot Solutions</option>
+                <option value="realestate">Real Estate Brokerage</option>
+                <option value="ai">AI Bot Solutions</option>
+                <option value="api">API Integrations</option>
+                <option value="saas">Custom Web & SaaS</option>
+                <option value="consultation">Virtual Consultation</option>
+                <option value="training">Virtual Training</option>
+                <option value="admin">Virtual Admin Support</option>
+                <option value="marketing">Virtual Marketing</option>
+                <option value="hr">Virtual HR & Recruitment</option>
+                <option value="it">Virtual IT Support</option>
               </select>
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-2">Message</label>
-              <textarea rows="5" placeholder="Tell us about your needs..." class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 resize-none"></textarea>
+              <textarea rows="5" placeholder="Tell us about your needs..." class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 resize-none"></textarea>
             </div>
 
-            <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300">
-              Send Message
-            </button>
+            <button type="submit" class="btn-primary w-full">Send Message</button>
           </form>
         </div>
 
-        <!-- Contact Info -->
         <div class="space-y-8">
-          <div class="bg-gray-800 rounded-2xl p-8">
-            <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+          <div class="card">
+            <h3 class="text-xl font-bold mb-6">Contact Information</h3>
             
             <div class="space-y-6">
               <div class="flex items-start space-x-4">
-                <span class="text-3xl">📧</span>
+                <span class="text-2xl">📧</span>
                 <div>
                   <p class="font-medium">Email</p>
-                  <a href="mailto:info@provantage.com" class="text-gray-400 hover:text-blue-400">info@provantage.com</a>
+                  <a href="mailto:info@provantage.com" class="text-blue-400 hover:text-blue-300">info@provantage.com</a>
                 </div>
               </div>
 
               <div class="flex items-start space-x-4">
-                <span class="text-3xl">📞</span>
+                <span class="text-2xl">📞</span>
                 <div>
                   <p class="font-medium">Phone</p>
-                  <a href="tel:+15551234567" class="text-gray-400 hover:text-blue-400">+1 (555) 123-4567</a>
+                  <a href="tel:+15551234567" class="text-blue-400 hover:text-blue-300">+1 (555) 123-4567</a>
                 </div>
               </div>
 
               <div class="flex items-start space-x-4">
-                <span class="text-3xl">📍</span>
+                <span class="text-2xl">📍</span>
                 <div>
                   <p class="font-medium">Office</p>
-                  <p class="text-gray-400">123 Business Ave, Suite 100<br>New York, NY 10001</p>
+                  <p class="text-gray-400">123 Business Ave<br>New York, NY 10001</p>
                 </div>
               </div>
 
               <div class="flex items-start space-x-4">
-                <span class="text-3xl">🕐</span>
+                <span class="text-2xl">🕐</span>
                 <div>
                   <p class="font-medium">Hours</p>
-                  <p class="text-gray-400">Monday - Friday: 9:00 AM - 6:00 PM EST<br>Saturday - Sunday: Closed</p>
+                  <p class="text-gray-400">Mon-Fri: 9AM - 6PM EST<br>Sat-Sun: Closed</p>
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Quick Links -->
-          <div class="bg-gray-800 rounded-2xl p-8">
-            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-            <ul class="space-y-3">
-              <li><a href="#professional-services" class="text-gray-400 hover:text-blue-400 transition-colors">Professional Services</a></li>
-              <li><a href="#real-estate" class="text-gray-400 hover:text-blue-400 transition-colors">Real Estate Services</a></li>
-              <li><a href="#ai-bots" class="text-gray-400 hover:text-blue-400 transition-colors">AI Bot Solutions</a></li>
-              <li><a href="#pricing" class="text-gray-400 hover:text-blue-400 transition-colors">View Pricing</a></li>
-            </ul>
           </div>
         </div>
       </div>
@@ -914,38 +792,114 @@
   </section>
 
   <!-- FOOTER -->
-  <footer class="bg-gray-900 text-gray-400 border-t border-gray-800 py-12">
-    <div class="max-w-7xl mx-auto px-6">
+  <footer class="py-12 px-6 bg-gray-900 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto">
       <div class="grid md:grid-cols-4 gap-8 mb-8">
         <div>
-          <div class="flex items-center space-x-2 mb-4">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-lg">PV</span>
-            </div>
-            <h3 class="text-lg font-bold text-white">ProVantage Group</h3>
-          </div>
-          <p class="text-sm">Professional innovation meets AI automation. Industry-leading solutions for modern business.</p>
+          <h3 class="text-lg font-bold text-blue-400 mb-4">ProVantage Group</h3>
+          <p class="text-gray-400 text-sm">Professional innovation meets AI automation for modern business.</p>
         </div>
 
         <div>
-          <h4 class="font-bold text-white mb-4">Services</h4>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#professional-services" class="hover:text-blue-400">Professional Services</a></li>
-            <li><a href="#real-estate" class="hover:text-blue-400">Real Estate</a></li>
-            <li><a href="#ai-bots" class="hover:text-blue-400">AI Bots</a></li>
-            <li><a href="#pricing" class="hover:text-blue-400">Pricing</a></li>
+          <h4 class="font-bold mb-4">Services</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#services" class="hover:text-blue-400">Professional Services</a></li>
+            <li><a href="#additional" class="hover:text-blue-400">Additional Services</a></li>
+            <li><a href="#virtual" class="hover:text-blue-400">Virtual Services</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 class="font-bold text-white mb-4">Company</h4>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#about" class="hover:text-blue-400">About Us</a></li>
+          <h4 class="font-bold mb-4">Company</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-blue-400">About Us</a></li>
             <li><a href="#contact" class="hover:text-blue-400">Contact</a></li>
             <li><a href="#" class="hover:text-blue-400">Blog</a></li>
-            <li><a href="#" class="hover:text-blue-400">Careers</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 class
+          <h4 class="font-bold mb-4">Legal</h4>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#" class="hover:text-blue-400">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-blue-400">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
+        <p>&copy; 2026 ProVantage Group. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+
+  <script>
+    const stripe = Stripe("YOUR_STRIPE_PUBLISHABLE_KEY");
+
+    function openPaymentModal(title, price, type) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalPrice').textContent = '$' + price.toLocaleString() + '/month';
+      document.getElementById('paymentModal').classList.add('show');
+      window.currentPayment = { title, price, type };
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.remove('show');
+    }
+
+    function switchPaymentMethod(method) {
+      document.querySelectorAll('.payment-content').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('.payment-tab').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(method + '-content').classList.add('show');
+      event.target.classList.add('active');
+    }
+
+    async function processStripePayment() {
+      try {
+        alert('✓ Payment processing! You will receive a confirmation email shortly.');
+        closePaymentModal();
+      } catch (error) {
+        alert('Payment failed. Please try again.');
+      }
+    }
+
+    async function connectCryptoWallet() {
+      if (!window.ethereum) {
+        alert('Please install MetaMask to pay with crypto');
+        return;
+      }
+      
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await provider.send("eth_requestAccounts", []);
+        alert('✓ Wallet connected! Processing payment...');
+        closePaymentModal();
+      } catch (error) {
+        console.error('Wallet connection failed:', error);
+      }
+    }
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    window.addEventListener('click', function(event) {
+      const modal = document.getElementById('paymentModal');
+      if (event.target === modal) {
+        closePaymentModal();
+      }
+    });
+  </script>
+
+  <!-- BotPenguin Chat Widget -->
+  <script id="messenger-widget-b" src="https://cdn.botpenguin.com/website-bot.js" defer>
+    699b8bb30f1ff6eef1e58995,699b8b8bd3c5f7f14274ccbb
+  </script>
+
+</body>
+</html>
